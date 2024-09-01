@@ -7,11 +7,11 @@ const times = ["утро", "день", "ночь"];
 
 // Правильные ответы
 const correctAnswers = [
-  ["check", null, null, "cross", null, "cross", null, null],
-  [null, null, "cross", "check", null, null, null, "cross"],
-  [null, null, "cross", null, "check", "cross", null, null],
-  [null, null, null, "cross", "check", null, "cross", null],
-  [null, null, "check", null, null, null, "cross", "cross"]
+  ["check", null, null, null, null, "check", null, null, null],
+  [null, "check", null, null, null, null, "check", null, null],
+  [null, null, "check", null, null, null, null, null, "check"],
+  [null, null, null, "check", "check", null, null, null, null],
+  [null, null, null, null, null, "check", "check", null, null]
 ];
 
 const CrossLogicGame = () => {
@@ -30,7 +30,7 @@ const CrossLogicGame = () => {
   const handleCellClick = (rowIndex, colIndex) => {
     const newGrid = [...grid];
 
-    // Если текущая ячейка пустая или содержит крестик, ставим галочку
+    // Если текущая ячейка пустая, ставим галочку
     if (newGrid[rowIndex][colIndex] === null) {
       newGrid[rowIndex][colIndex] = "check";
       addHints(rowIndex, colIndex, newGrid); // Добавление подсказок
@@ -70,18 +70,33 @@ const CrossLogicGame = () => {
     });
   };
 
+  // Заполнение пустых ячеек крестиками
+  const fillEmptyCellsWithCrosses = (newGrid) => {
+    for (let i = 0; i < names.length; i++) {
+      for (let j = 0; j < directions.length + times.length; j++) {
+        if (newGrid[i][j] === null) {
+          newGrid[i][j] = "cross";
+        }
+      }
+    }
+    return newGrid;
+  };
+
   // Проверка правильности заполнения
   const checkGame = () => {
     let isCorrect = true;
+    const newGrid = fillEmptyCellsWithCrosses([...grid]);
+
     for (let i = 0; i < names.length; i++) {
       for (let j = 0; j < directions.length + times.length; j++) {
-        if (grid[i][j] !== correctAnswers[i][j]) {
+        if (newGrid[i][j] !== correctAnswers[i][j]) {
           isCorrect = false;
           break;
         }
       }
       if (!isCorrect) break;
     }
+    setGrid(newGrid);
     setFeedback(isCorrect ? "Правильно!" : "Неправильно, попробуйте еще раз.");
   };
 
@@ -113,7 +128,7 @@ const CrossLogicGame = () => {
                   style={{
                     backgroundColor:
                       cell === "hint" ? "#e0e0e0" : "", // Цвет для подсказок
-                    color: cell === "hint" ? "gray" : "black",
+                    color: cell === "check" ? "green" : cell === "cross" ? "red" : "black",
                   }}
                 >
                   {cell === "check" && "✔️"}
