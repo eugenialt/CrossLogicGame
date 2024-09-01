@@ -7,11 +7,11 @@ const times = ["утро", "день", "ночь"];
 
 // Правильные ответы
 const correctAnswers = [
-  ["check", null, null, null, null, "check", null, null, null],
-  [null, "check", null, null, null, null, "check", null, null],
-  [null, null, "check", null, null, null, null, null, "check"],
-  [null, null, null, "check", "check", null, null, null, null],
-  [null, null, null, null, null, "check", "check", null, null]
+  ["check", "cross", "cross", "cross", "cross", "check", "cross", "cross", "cross"],
+  ["cross", "check", "cross", "cross", "cross", "cross", "check", "cross", "cross"],
+  ["cross", "cross", "check", "cross", "cross", "cross", "cross", "cross", "check"],
+  ["cross", "cross", "cross", "cross", "cross", "cross", "cross", "cross", "cross"],
+  ["cross", "cross", "cross", "cross", "cross", "cross", "cross", "cross", "cross"]
 ];
 
 const CrossLogicGame = () => {
@@ -79,14 +79,14 @@ const CrossLogicGame = () => {
         }
       }
     }
-    return newGrid;
   };
 
   // Проверка правильности заполнения
   const checkGame = () => {
-    let isCorrect = true;
-    const newGrid = fillEmptyCellsWithCrosses([...grid]);
+    const newGrid = [...grid];
+    fillEmptyCellsWithCrosses(newGrid); // Заполняем пустые ячейки крестиками
 
+    let isCorrect = true;
     for (let i = 0; i < names.length; i++) {
       for (let j = 0; j < directions.length + times.length; j++) {
         if (newGrid[i][j] !== correctAnswers[i][j]) {
@@ -96,7 +96,6 @@ const CrossLogicGame = () => {
       }
       if (!isCorrect) break;
     }
-    setGrid(newGrid);
     setFeedback(isCorrect ? "Правильно!" : "Неправильно, попробуйте еще раз.");
   };
 
@@ -128,7 +127,7 @@ const CrossLogicGame = () => {
                   style={{
                     backgroundColor:
                       cell === "hint" ? "#e0e0e0" : "", // Цвет для подсказок
-                    color: cell === "check" ? "green" : cell === "cross" ? "red" : "black",
+                    color: cell === "hint" ? "gray" : "black",
                   }}
                 >
                   {cell === "check" && "✔️"}
