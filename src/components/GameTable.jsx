@@ -1,110 +1,136 @@
 import React, { useState } from "react";
 
-const correctAnswers = {
-  0: { fruit: "apple", color: "red" },
-  1: { fruit: "banana", color: "yellow" },
-  2: { fruit: "cherry", color: "green" },
-};
+// Заголовки имен, направлений и времени
+const names = ["Макс", "Наташа", "Настя", "Алексей", "Дмитрий"];
+const directions = ["рабочка", "глава", "тимбилд", "консультация", "стратегия"];
+const times = ["утро", "день", "ночь"];
 
-const GameTable = () => {
-  const [result, setResult] = useState("");
+// Правильные ответы
+const correctAnswers = [
+  ["check", null, null, "cross", null, "cross", null, null],
+  [null, null, "cross", "check", null, null, null, "cross"],
+  [null, null, "cross", null, "check", "cross", null, null],
+  [null, null, null, "cross", "check", null, "cross", null],
+  [null, null, "check", null, null, null, "cross", "cross"]
+];
 
-  const checkAnswers = () => {
-    let allCorrect = true;
-    document.querySelectorAll(".answer").forEach((select) => {
-      const row = select.getAttribute("data-row");
-      const col = select.getAttribute("data-col");
-      const answer = select.value;
+const CrossLogicGame = () => {
+  const [grid, setGrid] = useState(
+    Array(names.length)
+      .fill(null)
+      .map(() =>
+        Array(directions.length + times.length)
+          .fill(null)
+          .map(() => null)
+      )
+  );
+  const [feedback, setFeedback] = useState(""); // Для отображения результатов проверки
 
-      if (col === "0" && answer !== correctAnswers[row].fruit) {
-        allCorrect = false;
-      }
-      if (col === "1" && answer !== correctAnswers[row].color) {
-        allCorrect = false;
+  // Обработчик для кликов на ячейки
+  const handleCellClick = (rowIndex, colIndex) => {
+    const newGrid = [...grid];
+
+    // Если текущая ячейка пустая или содержит крестик, ставим галочку
+    if (newGrid[rowIndex][colIndex] === null) {
+      newGrid[rowIndex][colIndex] = "check";
+      addHints(rowIndex, colIndex, newGrid); // Добавление подсказок
+    } else if (newGrid[rowIndex][colIndex] === "check") {
+      // Если уже стоит галочка, ставим крестик
+      newGrid[rowIndex][colIndex] = "cross";
+    } else {
+      // Если стоит крестик, делаем ячейку пустой
+      newGrid[rowIndex][colIndex] = null;
+    }
+
+    setGrid(newGrid);
+  };
+
+  // Добавление подсказок (серые крестики) вокруг галочек
+  const addHints = (rowIndex, colIndex, newGrid) => {
+    const directions = [
+      [0, 1], // Вправо
+      [0, -1], // Влево
+      [1, 0], // Вниз
+      [-1, 0], // Вверх
+    ];
+
+    directions.forEach(([rowOffset, colOffset]) => {
+      const newRow = rowIndex + rowOffset;
+      const newCol = colIndex + colOffset;
+
+      if (
+        newRow >= 0 &&
+        newRow < names.length &&
+        newCol >= 0 &&
+        newCol < directions.length + times.length &&
+        newGrid[newRow][newCol] === null
+      ) {
+        newGrid[newRow][newCol] = "hint";
       }
     });
+  };
 
-    if (allCorrect) {
-      setResult("All answers are correct!");
-    } else {
-      setResult("Some answers are incorrect. Try again!");
+  // Проверка правильности заполнения
+  const checkGame = () => {
+    let isCorrect = true;
+    for (let i = 0; i < names.length; i++) {
+      for (let j = 0; j < directions.length + times.length; j++) {
+        if (grid[i][j] !== correctAnswers[i][j]) {
+          isCorrect = false;
+          break;
+        }
+      }
+      if (!isCorrect) break;
     }
+    setFeedback(isCorrect ? "Правильно!" : "Неправильно, попробуйте еще раз.");
   };
 
   return (
-    <div className="game-container">
+    <div className="cross-logic-game">
       <table>
         <thead>
           <tr>
-            <th>Person</th>
-            <th>Fruit</th>
-            <th>Color</th>
+            <th></th>
+            {/* Заголовки направлений */}
+            {directions.map((direction, index) => (
+              <th key={index}>{direction}</th>
+            ))}
+            {/* Заголовки времени */}
+            {times.map((time, index) => (
+              <th key={index}>{time}</th>
+            ))}
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>Alice</td>
-            <td>
-              <select className="answer" data-row="0" data-col="0">
-                <option value="">--Select--</option>
-                <option value="apple">Apple</option>
-                <option value="banana">Banana</option>
-                <option value="cherry">Cherry</option>
-              </select>
-            </td>
-            <td>
-              <select className="answer" data-row="0" data-col="1">
-                <option value="">--Select--</option>
-                <option value="red">Red</option>
-                <option value="yellow">Yellow</option>
-                <option value="green">Green</option>
-              </select>
-            </td>
-          </tr>
-          <tr>
-            <td>Bob</td>
-            <td>
-              <select className="answer" data-row="1" data-col="0">
-                <option value="">--Select--</option>
-                <option value="apple">Apple</option>
-                <option value="banana">Banana</option>
-                <option value="cherry">Cherry</option>
-              </select>
-            </td>
-            <td>
-              <select className="answer" data-row="1" data-col="1">
-                <option value="">--Select--</option>
-                <option value="red">Red</option>
-                <option value="yellow">Yellow</option>
-                <option value="green">Green</option>
-              </select>
-            </td>
-          </tr>
-          <tr>
-            <td>Charlie</td>
-            <td>
-              <select className="answer" data-row="2" data-col="0">
-                <option value="">--Select--</option>
-                <option value="apple">Apple</option>
-                <option value="banana">Banana</option>
-                <option value="cherry">Cherry</option>
-              </select>
-            </td>
-            <td>
-              <select className="answer" data-row="2" data-col="1">
-                <option value="">--Select--</option>
-                <option value="red">Red</option>
-                <option value="yellow">Yellow</option>
-                <option value="green">Green</option>
-              </select>
-            </td>
-          </tr>
+          {names.map((name, rowIndex) => (
+            <tr key={rowIndex}>
+              <th>{name}</th> {/* Заголовок с именем */}
+              {grid[rowIndex].map((cell, colIndex) => (
+                <td
+                  key={colIndex}
+                  onClick={() => handleCellClick(rowIndex, colIndex)}
+                  className="cell"
+                  style={{
+                    backgroundColor:
+                      cell === "hint" ? "#e0e0e0" : "", // Цвет для подсказок
+                    color: cell === "hint" ? "gray" : "black",
+                  }}
+                >
+                  {cell === "check" && "✔️"}
+                  {cell === "cross" && "❌"}
+                  {cell === "hint" && "❌"}
+                </td>
+              ))}
+            </tr>
+          ))}
         </tbody>
       </table>
-      <button onClick={checkAnswers}>Check Answers</button>
-      <div className="result">{result}</div>
+      {/* Кнопка "Проверить" */}
+      <button onClick={checkGame}>Проверить</button>
+      {/* Отображение результата проверки */}
+      <div className="feedback">{feedback}</div>
     </div>
   );
 };
 
-export default GameTable;
+export default CrossLogicGame;
