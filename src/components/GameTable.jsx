@@ -1,17 +1,23 @@
 import React, { useState } from "react";
 
+
 // Заголовки имен, направлений и времени
-const names = ["Макс", "Наташа", "Настя", "Алексей", "Дмитрий"];
-const directions = ["рабочка", "глава", "тимбилд", "консультация", "стратегия"];
-const times = ["утро", "день", "ночь"];
+const names = ["Макс", "Наташа", "Настя", "Таня"];
+const directions = ["Рабочка", "Тимбилд", "Глава", "Мерч"];
+const times = ["Биофак", "ФМО", "ФПМИ", "Юрфак"];
 
 // Правильные ответы
+/*
+Наташа не с ФПМИ и не с ФМО
+Глава тимбилда - это не Таня, а ещё он/она не с биофака
+Глава с юрфака, и это не Настя
+Макс - рабочка, и он с ФПМИ
+*/
 const correctAnswers = [
-  ["check", "cross", "cross", "cross", "cross", "check", "cross", "cross", "cross"],
-  ["cross", "check", "cross", "cross", "cross", "cross", "check", "cross", "cross"],
-  ["cross", "cross", "check", "cross", "cross", "cross", "cross", "cross", "check"],
-  ["cross", "cross", "cross", "cross", "cross", "cross", "cross", "cross", "cross"],
-  ["cross", "cross", "cross", "cross", "cross", "cross", "cross", "cross", "cross"]
+  ["check", "cross", "cross", "cross", "cross", "cross", "check", "cross"],
+  ["cross", "cross", "check", "cross", "cross", "cross", "cross", "check"],
+  ["cross", "check", "cross", "cross", "cross", "check", "cross", "cross"],
+  ["cross", "cross", "cross", "check", "check", "cross", "cross", "cross"],
 ];
 
 const CrossLogicGame = () => {
@@ -37,6 +43,7 @@ const CrossLogicGame = () => {
     } else if (newGrid[rowIndex][colIndex] === "check") {
       // Если уже стоит галочка, ставим крестик
       newGrid[rowIndex][colIndex] = "cross";
+      removeHints(rowIndex, colIndex, newGrid);
     } else {
       // Если стоит крестик, делаем ячейку пустой
       newGrid[rowIndex][colIndex] = null;
@@ -53,22 +60,82 @@ const CrossLogicGame = () => {
       [1, 0], // Вниз
       [-1, 0], // Вверх
     ];
-
+  
+    // Функция для определения группы столбца (времени или направлений)
+    const getColumnGroup = (colIndex) => {
+      if (colIndex < directions.length) {
+        return "directions";
+      } else {
+        return "times";
+      }
+    };
+  
+    const columnGroup = getColumnGroup(colIndex);
+  
     directions.forEach(([rowOffset, colOffset]) => {
-      const newRow = rowIndex + rowOffset;
-      const newCol = colIndex + colOffset;
-
-      if (
+      let newRow = rowIndex + rowOffset;
+      let newCol = colIndex + colOffset;
+  
+      while (
         newRow >= 0 &&
         newRow < names.length &&
         newCol >= 0 &&
         newCol < directions.length + times.length &&
-        newGrid[newRow][newCol] === null
+        getColumnGroup(newCol) === columnGroup // Проверяем, остаемся ли в той же группе столбцов
       ) {
-        newGrid[newRow][newCol] = "hint";
+        if (newGrid[newRow][newCol] !== "check") {
+          newGrid[newRow][newCol] = "cross";
+        }
+  
+        newRow += rowOffset;
+        newCol += colOffset;
       }
     });
   };
+  
+// Удаление подсказок (серых крестиков) в направлении, где стояла галочка
+const removeHints = (rowIndex, colIndex, newGrid) => {
+  const directions = [
+    [0, 1], // Вправо
+    [0, -1], // Влево
+    [1, 0], // Вниз
+    [-1, 0], // Вверх
+  ];
+
+  directions.forEach(([rowOffset, colOffset]) => {
+    let newRow = rowIndex + rowOffset;
+    let newCol = colIndex + colOffset;
+
+    while (
+      newRow >= 0 &&
+      newRow < names.length &&
+      newCol >= 0 &&
+      newCol < directions.length + times.length
+    ) {
+      // Если находим галочку в направлении удаления, прекращаем удаление крестиков
+      if (newGrid[newRow][newCol] === "check") {
+        break;
+      }
+
+      // Удаляем крестик, только если он не поддерживается другой галочкой
+      if (newGrid[newRow][newCol] === "cross") {
+        newGrid[newRow][newCol] = null;
+      }
+
+      newRow += rowOffset;
+      newCol += colOffset;
+    }
+  });
+
+  // Обновление крестиков после удаления галочки
+  for (let i = 0; i < names.length; i++) {
+    for (let j = 0; j < directions.length + times.length; j++) {
+      if (newGrid[i][j] === "check") {
+        addHints(i, j, newGrid); // Добавляем крестики заново от оставшихся галочек
+      }
+    }
+  }
+};
 
   // Заполнение пустых ячеек крестиками
   const fillEmptyCellsWithCrosses = (newGrid) => {
@@ -83,19 +150,18 @@ const CrossLogicGame = () => {
 
   // Проверка правильности заполнения
   const checkGame = () => {
-    const newGrid = [...grid];
-    fillEmptyCellsWithCrosses(newGrid); // Заполняем пустые ячейки крестиками
-
     let isCorrect = true;
+
     for (let i = 0; i < names.length; i++) {
       for (let j = 0; j < directions.length + times.length; j++) {
-        if (newGrid[i][j] !== correctAnswers[i][j]) {
+        if (grid[i][j] !== correctAnswers[i][j]) {
           isCorrect = false;
           break;
         }
       }
       if (!isCorrect) break;
     }
+
     setFeedback(isCorrect ? "Правильно!" : "Неправильно, попробуйте еще раз.");
   };
 
