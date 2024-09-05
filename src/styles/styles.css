@@ -1,57 +1,140 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap");
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+  background-color: #f0f0f0;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-family: "Roboto", sans-serif;
+  overflow: hidden;
+  position: relative;
+}
+
+h1 {
+  font-family: "Source Code Pro", monospace;
+  font-size: 40px;
+}
+
+.app-container {
+  text-align: center;
+}
+
+.game-container {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background-color: #fafafa;
+  margin-bottom: 20px;
+}
+
+th,
+td {
+  padding: 8px;
+  font-size: 18px;
+  border: 1px solid #a8a3a3;
+}
+
+td {
+  cursor: pointer;
+
+  &:hover {
+    background-color: #dbdada;
   }
-  
-  .app-container {
-    text-align: center;
-  }
-  
-  .game-container {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-  }
-  
-  th, td {
-    padding: 8px;
-    border: 1px solid #ddd;
-  }
-  
-  select {
-    width: 100%;
-    padding: 5px;
-  }
-  
-  button {
-    margin-top: 20px;
-    padding: 10px 20px;
+}
+
+select {
+  width: 100%;
+  padding: 5px;
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #969a97;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+button:hover {
+  background-color: #28a745;
+  color: #e4e2e2;
+}
+
+.result {
+  font-size: 1.2em;
+}
+
+.feedback {
+  font-size: 1.2em;
+  margin-bottom: 20px;
+}
+
+.hints {
+  position: fixed;
+  left: 0;
+  top: 15%;
+}
+
+.hint-text {
+  font-family: "Source Code Pro", monospace;
+  font-size: 18px;
+  font-weight: 700;
+  display: flex;
+  align-items: flex-start;
+  padding-left: 20px;
+}
+
+.hints-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.next-level-button {
+  background-color: #969a97;
+  color: #f0f0f0;
+
+  &:hover {
     background-color: #28a745;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+    color: #f0f0f0;
   }
-  
-  button:hover {
-    background-color: #218838;
-  }
-  
-  .result {
-    margin-top: 20px;
-    font-size: 1.2em;
-  }
-  
+}
+
+/* 
+    .spot {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      background-color: rgba(255, 165, 0, 0.3); 
+      border-radius: 50%;
+      opacity: 0;
+      animation: fade-in-out 4s infinite;
+      z-index: -1;
+    }
+
+    @keyframes fade-in-out {
+      0% {
+        opacity: 0;
+        transform: scale(0.5);
+      }
+      50% {
+        opacity: 1;
+        transform: scale(1.5);
+      }
+      100% {
+        opacity: 0;
+        transform: scale(0.5);
+      }
+    } */
