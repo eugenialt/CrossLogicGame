@@ -1,13 +1,17 @@
 import React from "react";
-import GameTable from "./components/GameTable";
 import './styles/styles.css';
+import { LevelOne } from "./Page/LevelOne";
+import { Routes, Route } from "react-router-dom";
+import { LevelTwo } from "./Page/LevelTwo";
 
 function App() {
   return (
-    <div className="app-container">
-      <h1>Cross Logic Puzzle</h1>
-      <GameTable />
-    </div>
+    <>
+    <Routes>
+      <Route path="/" element={<LevelOne />} />
+      <Route path="/levelTwo" element={<LevelTwo />} />
+    </Routes>
+    </>
   );
 }
 

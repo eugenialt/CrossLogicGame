@@ -1,24 +1,14 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 // Заголовки имен, направлений и времени
 const names = ["Макс", "Наташа", "Настя", "Таня"];
 const directions = ["Рабочка", "Тимбилд", "Глава", "Мерч"];
 const times = ["Биофак", "ФМО", "ФПМИ", "Юрфак"];
 
-// Правильные ответы
-/*
-Наташа не с ФПМИ и не с ФМО
-Глава тимбилда - это не Таня, а ещё он/она не с биофака
-Глава с юрфака, и это не Настя
-Макс - рабочка, и он с ФПМИ
-*/
+
 
 const hints = [
-  "Наташа не с ФПМИ и не с ФМО",
-  "Глава тимбилда - это не Таня, а ещё он/она не с биофака",
-  "Глава с юрфака, и это не Настя",
-  "Макс - рабочка, и он с ФПМИ",
+  
 ];
 
 const correctAnswers = [
@@ -28,7 +18,7 @@ const correctAnswers = [
   ["cross", "cross", "cross", "check", "check", "cross", "cross", "cross"],
 ];
 
-const CrossLogicGame = () => {
+const CrossLogicGameLevelTwo = () => {
   const [grid, setGrid] = useState(
     Array(names.length)
       .fill(null)
@@ -39,8 +29,6 @@ const CrossLogicGame = () => {
       )
   );
   const [feedback, setFeedback] = useState(""); // Для отображения результатов проверки
-  const navigate = useNavigate();
-  const [gameCompleted, setGameCompleted] = useState(false);
 
   // Обработчик для кликов на ячейки
   const handleCellClick = (rowIndex, colIndex) => {
@@ -172,13 +160,7 @@ const CrossLogicGame = () => {
       if (!isCorrect) break;
     }
 
-    if (isCorrect) {
-      setFeedback("Правильно!");
-      setGameCompleted(true); // Устанавливаем состояние успешного завершения
-    } else {
-      setFeedback("Неправильно, попробуйте еще раз");
-      setGameCompleted(false); // Сбрасываем состояние
-    }
+    setFeedback(isCorrect ? "Правильно!" : "Неправильно, попробуйте еще раз");
   };
 
   // function createSpot() {
@@ -263,16 +245,8 @@ const CrossLogicGame = () => {
       <button onClick={checkGame}>Проверить</button>
       {/* Отображение результата проверки */}
       <div className="feedback">{feedback}</div>
-      {gameCompleted && (
-        <button
-          className="next-level-button"
-          onClick={() => navigate("/leveltwo")}
-        >
-          Перейти на второй уровень
-        </button>
-      )}
     </div>
   );
 };
 
-export default CrossLogicGame;
+export default CrossLogicGameLevelTwo;
