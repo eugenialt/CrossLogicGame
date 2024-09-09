@@ -21,7 +21,7 @@ const correctAnswers = [
   ["cross", "cross", "cross", "check", "cross", "cross", "check", "cross"],
 ];
 
-const CrossLogicGameLevelTwo = () => {
+const CrossLogicGameLevelFree = () => {
   const [grid, setGrid] = useState(
     Array(names.length)
       .fill(null)
@@ -163,7 +163,13 @@ const CrossLogicGameLevelTwo = () => {
       if (!isCorrect) break;
     }
 
-    setFeedback(isCorrect ? "Правильно!" : "Неправильно, попробуйте еще раз");
+    if (isCorrect) {
+      setFeedback("Правильно!");
+      setGameCompleted(true); // Устанавливаем состояние успешного завершения
+    } else {
+      setFeedback("Неправильно, попробуйте еще раз");
+      setGameCompleted(false); // Сбрасываем состояние
+    }
   };
 
   // function createSpot() {
@@ -252,4 +258,4 @@ const CrossLogicGameLevelTwo = () => {
   );
 };
 
-export default CrossLogicGameLevelTwo;
+export default CrossLogicGameLevelFree;
