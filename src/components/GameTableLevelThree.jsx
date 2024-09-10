@@ -43,7 +43,7 @@ const CrossLogicGameLevelFree = () => {
       addHints(rowIndex, colIndex, newGrid); // Добавление подсказок
     } else if (newGrid[rowIndex][colIndex] === "check") {
       // Если уже стоит галочка, ставим крестик
-      newGrid[rowIndex][colIndex] = "cross";
+      newGrid[rowIndex][colIndex] = "hint";
       removeHints(rowIndex, colIndex, newGrid);
     } else {
       // Если стоит крестик, делаем ячейку пустой
@@ -84,7 +84,7 @@ const CrossLogicGameLevelFree = () => {
         newCol < directions.length + times.length &&
         getColumnGroup(newCol) === columnGroup // Проверяем, остаемся ли в той же группе столбцов
       ) {
-        if (newGrid[newRow][newCol] !== "check") {
+        if (newGrid[newRow][newCol] !== "check" && newGrid[newRow][newCol] !== "hint") {
           newGrid[newRow][newCol] = "cross";
         }
 
