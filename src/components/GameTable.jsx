@@ -21,13 +21,18 @@ const hints = [
   "Макс - рабочка, и он с ФПМИ",
 ];
 
-const correctAnswers = [
+const correctAnswersCrosses = [
   ["check", "cross", "cross", "cross", "cross", "cross", "check", "cross"],
   ["cross", "cross", "check", "cross", "cross", "cross", "cross", "check"],
   ["cross", "check", "cross", "cross", "cross", "check", "cross", "cross"],
   ["cross", "cross", "cross", "check", "check", "cross", "cross", "cross"],
 ];
-
+const correctAnswersHints = [
+  ["check", "hint", "hint", "hint", "hint", "hint", "check", "hint"],
+  ["hint", "hint", "check", "hint", "hint", "hint", "hint", "check"],
+  ["hint", "check", "hint", "hint", "hint", "check", "hint", "hint"],
+  ["hint", "hint", "hint", "check", "check", "hint", "hint", "hint"],
+];
 const CrossLogicGame = () => {
   const [grid, setGrid] = useState(
     Array(names.length)
@@ -52,7 +57,7 @@ const CrossLogicGame = () => {
       addHints(rowIndex, colIndex, newGrid); // Добавление подсказок
     } else if (newGrid[rowIndex][colIndex] === "check") {
       // Если уже стоит галочка, ставим крестик
-      newGrid[rowIndex][colIndex] = "cross";
+      newGrid[rowIndex][colIndex] = "hint";
       removeHints(rowIndex, colIndex, newGrid);
     } else {
       // Если стоит крестик, делаем ячейку пустой
@@ -93,7 +98,7 @@ const CrossLogicGame = () => {
         newCol < directions.length + times.length &&
         getColumnGroup(newCol) === columnGroup // Проверяем, остаемся ли в той же группе столбцов
       ) {
-        if (newGrid[newRow][newCol] !== "check") {
+        if (newGrid[newRow][newCol] !== "check" && newGrid[newRow][newCol] !== "hint") {
           newGrid[newRow][newCol] = "cross";
         }
 
@@ -147,24 +152,13 @@ const CrossLogicGame = () => {
     }
   };
 
-  // // Заполнение пустых ячеек крестиками
-  // const fillEmptyCellsWithCrosses = (newGrid) => {
-  //   for (let i = 0; i < names.length; i++) {
-  //     for (let j = 0; j < directions.length + times.length; j++) {
-  //       if (newGrid[i][j] === null) {
-  //         newGrid[i][j] = "cross";
-  //       }
-  //     }
-  //   }
-  // };
-
   // Проверка правильности заполнения
   const checkGame = () => {
     let isCorrect = true;
 
     for (let i = 0; i < names.length; i++) {
       for (let j = 0; j < directions.length + times.length; j++) {
-        if (grid[i][j] !== correctAnswers[i][j]) {
+        if (grid[i][j] !== correctAnswersCrosses[i][j] && grid[i][j] !== correctAnswersHints[i][j]) {
           isCorrect = false;
           break;
         }
@@ -180,33 +174,6 @@ const CrossLogicGame = () => {
       setGameCompleted(false); // Сбрасываем состояние
     }
   };
-
-  // function createSpot() {
-  //   const spot = document.createElement('div');
-  //   spot.classList.add('spot');
-  //   document.body.appendChild(spot);
-
-  //   // Случайные координаты по всему экрану
-  //   const x = Math.random() * window.innerWidth; // Случайная горизонтальная позиция
-  //   const y = Math.random() * window.innerHeight; // Случайная вертикальная позиция
-
-  //   const size = Math.random() * 60 + 40; // Случайный размер пятен (от 40 до 100 пикселей)
-  //   const color = `rgba(255, ${Math.floor(Math.random() * 100 + 150)}, 0, 0.3)`; // Оттенки жёлтого и оранжевого
-
-  //   spot.style.left = `${x}px`; // Устанавливаем случайную позицию по горизонтали
-  //   spot.style.top = `${y}px`;  // Устанавливаем случайную позицию по вертикали
-  //   spot.style.width = `${size}px`;
-  //   spot.style.height = `${size}px`;
-  //   spot.style.backgroundColor = color;
-
-  //   // Удаление пятна после завершения анимации
-  //   setTimeout(() => {
-  //     spot.remove();
-  //   }, 10000); // Пятно исчезает через 10 секунд
-  // }
-
-  // // Постоянное создание пятен
-  // setInterval(createSpot, 5000);
 
   return (
     <div className="cross-logic-game">
